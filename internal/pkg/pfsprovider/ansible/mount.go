@@ -11,9 +11,9 @@ import (
 func getMountDir(volume registry.Volume) string {
 	// TODO: what about the environment variables that are being set? should share logic with here
 	if volume.MultiJob {
-		return fmt.Sprintf("/mnt/multi_job_buffer/%s", volume.UUID)
+		return fmt.Sprintf("/dac/multi_job_buffer/%s", volume.UUID)
 	}
-	return fmt.Sprintf("/mnt/job_buffer/%s", volume.UUID)
+	return fmt.Sprintf("/dac/job_buffer/%s", volume.UUID)
 }
 
 func mount(fsType FSType, volume registry.Volume, brickAllocations []registry.BrickAllocation) error {
@@ -148,7 +148,7 @@ func detachLoopback(hostname string, loopback string) error {
 }
 
 func chown(hostname string, owner uint, directory string) error {
-	return remoteExecuteCmd(hostname, fmt.Sprintf("chown %d %s", owner, directory))
+	return remoteExecuteCmd(hostname, fmt.Sprintf("chown %d: %s", owner, directory))
 }
 
 func umountLustre(hostname string, directory string) error {
@@ -173,16 +173,16 @@ func mountLustre(hostname string, mgtHost string, fsname string, directory strin
 		return err
 	}
 	return remoteExecuteCmd(hostname, fmt.Sprintf(
-		"mount -t lustre %s:/%s %s", mgtHost, fsname, directory))
+		"mount -t lustre %s-opa@o2ib1:/%s %s", mgtHost, fsname, directory)) //TODO: make the lustre nid configurable this is filth
 }
 
 func mountBeegFS(hostname string, mgtHost string, fsname string, directory string) error {
-	// Ansible mounts beegfs at /mnt/beegfs/<fsname>, link into above location here
+	// Ansible mounts beegfs at /dac/beegfs/<fsname>, link into above location here
 	// First remove the directory, then replace with a symbolic link
 	if err := removeSubtree(hostname, directory); err != nil {
 		return err
 	}
-	return remoteExecuteCmd(hostname, fmt.Sprintf("ln -s /mnt/beegfs/%s %s", fsname, directory))
+	return remoteExecuteCmd(hostname, fmt.Sprintf("ln -s /dac/beegfs/%s %s", fsname, directory))
 }
 
 func mkdir(hostname string, directory string) error {
