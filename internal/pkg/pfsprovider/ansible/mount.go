@@ -70,14 +70,14 @@ func mount(fsType FSType, volume registry.Volume, brickAllocations []registry.Br
 			if err := mkdir(attachment.Hostname, privateDir); err != nil {
 				return err
 			}
-			chown(attachment.Hostname, volume.Owner, privateDir)
+			chown(attachment.Hostname, volume.Owner, volume.Group, privateDir)
 		}
 
 		sharedDir := path.Join(mountDir, "/shared")
 		if err := mkdir(attachment.Hostname, sharedDir); err != nil {
 			return err
 		}
-		chown(attachment.Hostname, volume.Owner, sharedDir)
+		chown(attachment.Hostname, volume.Owner, volume.Group, sharedDir)
 	}
 	// TODO on error should we always call umount? maybe?
 	// TODO move to ansible style automation or preamble?
@@ -147,8 +147,8 @@ func detachLoopback(hostname string, loopback string) error {
 	return remoteExecuteCmd(hostname, fmt.Sprintf("losetup -d %s", loopback))
 }
 
-func chown(hostname string, owner uint, directory string) error {
-	return remoteExecuteCmd(hostname, fmt.Sprintf("chown %d: %s", owner, directory))
+func chown(hostname string, owner uint, group uint, directory string) error {
+	return remoteExecuteCmd(hostname, fmt.Sprintf("chown %d:%d %s", owner, group, directory))
 }
 
 func umountLustre(hostname string, directory string) error {
