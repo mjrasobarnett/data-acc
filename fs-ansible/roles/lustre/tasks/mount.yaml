@@ -75,11 +75,11 @@
   block:
     - name: ensure mount dir exists
       file:
-        path: "/lustre/{{ fs_name }}"
+        path: "/dac/{{ fs_name }}"
         state: directory
         recurse: yes
     - name: mount lustre buffer
-      command: "mount -t lustre {{ mgsnode }}:/{{ fs_name }} /lustre/{{ fs_name }}"
+      command: "mount -t lustre {{ mgsnode }}:/{{ fs_name }} /dac/{{ fs_name }}"
       register: command_result
       failed_when: "command_result.rc != 0 and ('is already mounted' not in command_result.stderr)"
       changed_when: "command_result.rc == 0"
@@ -89,14 +89,14 @@
 - name: umount buffer
   block:
     - name: umount lustre buffer
-      command: "umount -l /lustre/{{ fs_name }}"
+      command: "umount -l /dac/{{ fs_name }}"
       register: command_result
       failed_when: "command_result.rc != 0 and ('not mounted' not in command_result.stderr) and ('mountpoint not found' not in command_result.stderr)"
       changed_when: "command_result.rc == 0"
 
     - name: ensure mount dir deleted
       file:
-        path: "/lustre/{{ fs_name }}"
+        path: "/dac/{{ fs_name }}"
         state: absent
   tags: [ 'never', 'umount_fs', 'client_unmount']
 

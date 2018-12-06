@@ -26,8 +26,6 @@ func TestPlugin_GetInventory(t *testing.T) {
   children:
     abcdefgh:
       hosts:
-        cpu1: {}
-        cpu2: {}
         dac1:
           abcdefgh_mgs: nvme1n1
           abcdefgh_mdt: nvme1n1
