@@ -32,7 +32,7 @@ Ensure you have your GOPATH setup. Create a *go* directory containing a *src* an
 
 To build it locally and run tests:
 ```
-dep ensure -v 
+dep ensure -v
 make
 make test
 ```
@@ -49,6 +49,7 @@ You can configure the system to access a locally running etcd by setting:
 ```
 export ETCDCTL_ENDPOINTS=127.0.0.1:2379
 ```
+an example etcd.conf can be seen in docs/etcd.conf
 
 Go's [dep](https://golang.github.io/dep/) is used to manage code dependencies. To get the dependencies sorted run:
 ```

@@ -19,9 +19,9 @@
   block:
     - name: Create MGS mount dir
       file:
-	path: /lustre/MGS
-	state: directory
-	recurse: yes
+        path: /lustre/MGS
+        state: directory
+        recurse: yes
 
     - name: mount MGSs
       command: mount -t lustre /dev/{{ mgs }} /lustre/MGS
@@ -37,9 +37,9 @@
   block:
     - name: Create MDT mount dir
       file:
-	path: /lustre/{{ fs_name }}/MDT/{{ item }}
-	state: directory
-	recurse: yes
+        path: /lustre/{{ fs_name }}/MDT/{{ item }}
+        state: directory
+        recurse: yes
       with_items: "{{ mdt.keys() }}"
 
     - name: mount MDTs
@@ -57,9 +57,9 @@
   block:
     - name: Create OST mount dir
       file:
-	path: /lustre/{{ fs_name }}/OST/{{ item }}
-	state: directory
-	recurse: yes
+        path: /lustre/{{ fs_name }}/OST/{{ item }}
+        state: directory
+        recurse: yes
       with_items: "{{ osts.keys() }}"
 
     - name: mount OSTs
@@ -78,9 +78,9 @@
   block:
     - name: ensure mount dir exists
       file:
-	path: "/lustre/{{ fs_name }}"
-	state: directory
-	recurse: yes
+        path: "/lustre/{{ fs_name }}"
+        state: directory
+        recurse: yes
     - name: mount lustre buffer
       command: "mount -t lustre {{ mgsnode }}:/{{ fs_name }} /lustre/{{ fs_name }}"
       register: command_result
@@ -99,8 +99,8 @@
 
     - name: ensure mount dir deleted
       file:
-	path: "/lustre/{{ fs_name }}"
-	state: absent
+        path: "/lustre/{{ fs_name }}"
+        state: absent
   tags: [ 'never', 'umount_fs', 'client_unmount']
 
 
@@ -115,8 +115,8 @@
 
     - name: Remove OST mount dir
       file:
-	path: /lustre/{{ fs_name }}/OST
-	state: absent
+        path: /lustre/{{ fs_name }}/OST
+        state: absent
   when:
     - osts is defined
   tags: [ 'never', 'stop_osts', 'stop_all']
@@ -133,8 +133,8 @@
 
     - name: Remove MDT mount dir
       file:
-	path: /lustre/{{ fs_name }}/MDT
-	state: absent
+        path: /lustre/{{ fs_name }}/MDT
+        state: absent
   when:
     - mdt is defined
   tags: [ 'never', 'stop_mdts', 'stop_all']
@@ -150,8 +150,8 @@
 
     - name: Remove MGSDT mount dir
       file:
-	path: /lustre/MGS
-	state: absent
+        path: /lustre/MGS
+        state: absent
   when:
     - mgs is defined
   tags: [ 'never', 'stop_mgs']
