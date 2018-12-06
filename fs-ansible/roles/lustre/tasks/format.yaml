@@ -30,8 +30,7 @@
   tags: [ 'never', 'reformat_mgs']
 
 - name: Reformat MDT
-  command: /usr/sbin/mkfs.lustre --mdt --reformat --fsname={{ fs_name }} --index={{ item.value }} --mgsnode={{ mgsnode }} /dev/{{ item.key }}
-  loop: "{{ mdt|default({})|dict2items }}"
+  command: /usr/sbin/mkfs.lustre --mdt --reformat --fsname={{ fs_name }} --index={{ item.value }} --mgsnode={{ mgsnode }} /dev/{{ mdt }}
   when:
     - mdt is defined
   tags: [ 'never', 'reformat_mdts', 'format']
@@ -44,8 +43,7 @@
   tags: [ 'never', 'reformat_osts', 'format']
 
 - name: Replacing  MDT
-  command: /usr/sbin/mkfs.lustre --mdt --reformat --replace --fsname={{ fs_name }} --index={{ item.value }} --mgsnode={{ mgsnode }} /dev/{{ item.key }}
-  loop: "{{ mdt|default({})|dict2items }}"
+  command: /usr/sbin/mkfs.lustre --mdt --reformat --replace --fsname={{ fs_name }} --index={{ item.value }} --mgsnode={{ mgsnode }} /dev/{{ mdt }}
   when:
     - mdt is defined
   tags: [ 'never', 'replace_mdts']

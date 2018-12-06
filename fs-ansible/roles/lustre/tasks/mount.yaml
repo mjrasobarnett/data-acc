@@ -32,22 +32,19 @@
     - mgs is defined
   tags: [ 'never', 'start_mgs', 'create_mgs']
 
-
 - name: Start MDTs
   block:
     - name: Create MDT mount dir
       file:
-        path: /lustre/{{ fs_name }}/MDT/{{ item }}
+        path: /lustre/{{ fs_name }}/MDT/{{ mdt }}
         state: directory
         recurse: yes
-      with_items: "{{ mdt.keys() }}"
 
     - name: mount MDTs
-      command: mount -t lustre /dev/{{ mdt }} /lustre/{{ fs_name }}/MDT/{{ item }}
+      command: mount -t lustre /dev/{{ mdt }} /lustre/{{ fs_name }}/MDT/{{ mdt }}
       register: command_result
       failed_when: "command_result.rc != 0 and ('is already mounted' not in command_result.stderr)"
       changed_when: "command_result.rc == 0"
-      with_items: "{{ mdt.keys() }}"
   when:
     - mdt is defined
   tags: [ 'never', 'start_mdts', 'create_mdt']
@@ -103,7 +100,6 @@
         state: absent
   tags: [ 'never', 'umount_fs', 'client_unmount']
 
-
 - name: Stop OST
   block:
     - name: umount OSTs
@@ -121,15 +117,13 @@
     - osts is defined
   tags: [ 'never', 'stop_osts', 'stop_all']
 
-
 - name: Stop MDTs
   block:
     - name: umount MDTs
-      command: umount /lustre/{{ fs_name }}/MDT/{{ item }}
+      command: umount /lustre/{{ fs_name }}/MDT/{{ mdt }}
       register: command_result
       failed_when: "command_result.rc != 0 and ('not mounted' not in command_result.stderr) and ('mountpoint not found' not in command_result.stderr)"
       changed_when: "command_result.rc == 0"
-      with_items: "{{ mdt.keys() }}"
 
     - name: Remove MDT mount dir
       file:
@@ -138,7 +132,6 @@
   when:
     - mdt is defined
   tags: [ 'never', 'stop_mdts', 'stop_all']
-
 
 - name: Stop MGS
   block:

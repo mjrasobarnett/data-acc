@@ -38,14 +38,14 @@ type Wrapper struct {
 var hostGroup = "dac-prod"
 
 func getInventory(fsType FSType, volume registry.Volume, brickAllocations []registry.BrickAllocation) string {
-	var mdt registry.BrickAllocation
+  var mdt registry.BrickAllocation
 	osts := make(map[string][]registry.BrickAllocation)
 	for _, allocation := range brickAllocations {
 		if allocation.AllocatedIndex == 0 {
-			mdt = allocation
+      mdt = allocation
 			current, success := osts[allocation.Hostname]
 			if !success {
-				// ensure hostname will be iterated through below to output mdt if required
+				// ensure hostname will be iterated through below to output mdt if requireda
 				osts[allocation.Hostname] = current
 			}
 		} else {
