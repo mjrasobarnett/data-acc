@@ -72,12 +72,12 @@
 - name: Mount FS
   block:
     - name: ensure mount dir exists
-      file:
-        path: "/mnt/lustre/{{ fs_name }}"
+      file: # TODO: how to match what we have in the code? /dac/<token>_job/global
+        path: "/dac/{{ fs_name }}"
         state: directory
         recurse: yes
     - name: mount lustre fs
-      command: "mount -t lustre {{ mgsnode }}{{ lnet_suffix }}:/{{ fs_name }} /mnt/lustre/{{ fs_name }}"
+      command: "mount -t lustre {{ mgsnode }}{{ lnet_suffix }}:/{{ fs_name }} /dac/{{ fs_name }}"
       register: command_result
       failed_when: "command_result.rc != 0 and ('is already mounted' not in command_result.stderr)"
       changed_when: "command_result.rc == 0"
@@ -87,14 +87,14 @@
 - name: umount FS
   block:
     - name: umount lustre fs
-      command: "umount -l /mnt/lustre/{{ fs_name }}"
+      command: "umount -l /dac/{{ fs_name }}"
       register: command_result
       failed_when: "command_result.rc != 0 and ('not mounted' not in command_result.stderr) and ('mountpoint not found' not in command_result.stderr)"
       changed_when: "command_result.rc == 0"
 
     - name: ensure mount dir deleted
       file:
-        path: "/mnt/lustre/{{ fs_name }}"
+        path: "/dac/{{ fs_name }}"
         state: absent
   tags: [ 'never', 'umount_fs', 'client_unmount']
 
