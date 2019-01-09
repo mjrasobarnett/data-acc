@@ -22,15 +22,34 @@ func DeleteBufferComponents(volumeRegistry registry.VolumeRegistry, poolRegistry
 		return err
 	}
 
+	// TODO if hurry is not passed, really we should do data out
+
 	if job.JobVolume != "" {
 		volume, err := volumeRegistry.Volume(job.JobVolume)
 		if err != nil {
 			return err
-		} else {
-			vlm := lifecycle.NewVolumeLifecycleManager(volumeRegistry, poolRegistry, volume)
-			if err := vlm.Delete(); err != nil {
+		}
+
+		vlm := lifecycle.NewVolumeLifecycleManager(volumeRegistry, poolRegistry, volume)
+
+		// TODO: must share more code with umount!
+		if err := vlm.Unmount(job.AttachHosts, job.Name); err != nil {
+			log.Println("warning: umount failed for volume", volume.Name)
+			return err
+		}
+		for _, volumeName := range job.MultiJobVolumes {
+			volume, err := volumeRegistry.Volume(volumeName)
+			if err != nil {
 				return err
 			}
+			vlm2 := lifecycle.NewVolumeLifecycleManager(volumeRegistry, poolRegistry, volume)
+			if err := vlm2.Unmount(job.AttachHosts, job.Name); err != nil {
+				return err
+			}
+		}
+
+		if err := vlm.Delete(); err != nil {
+			return err
 		}
 	}
 
